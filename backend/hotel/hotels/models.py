@@ -25,10 +25,11 @@ class Hotel(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        # Mehmonxona mavjudligini tekshirish
-        if Hotel.objects.filter(name=self.name).exists():
+      # Hozirgi mehmonxonani tekshiruvdan chiqaramiz (exclude)
+        if Hotel.objects.filter(name=self.name).exclude(id=self.id).exists():
             raise ValueError(f"{self.name} mehmonxonasi allaqachon mavjud!")
         super().save(*args, **kwargs)
+
 
 
 # Xona modeli
@@ -56,10 +57,11 @@ class Room(models.Model):
         return self.hotel.name
 
     def save(self, *args, **kwargs):
-        # Xona mavjudligini tekshirish
-        if Room.objects.filter(room_no=self.room_no, hotel=self.hotel).exists():
+      # Xuddi shu mehmonxona va xona raqamiga ega boshqa obyekt mavjudligini tekshiramiz
+        if Room.objects.filter(room_no=self.room_no, hotel=self.hotel).exclude(id=self.id).exists():
             raise ValueError(f"Xona {self.room_no} {self.hotel.name} mehmonxonasida allaqachon mavjud!")
-        super().save(*args, **kwargs)
+            super().save(*args, **kwargs)
+
 
 
 # Band qilish modeli
